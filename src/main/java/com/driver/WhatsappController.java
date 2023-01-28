@@ -2,17 +2,10 @@ package com.driver;
 
 import java.util.*;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -20,12 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class WhatsappController {
 
     //Autowire will not work in this case, no need to change this and add autowire
-    WhatsappService whatsappService= new WhatsappService();
+    WhatsappService whatsappService = new WhatsappService();
 
     @PostMapping("/add-user")
     public String createUser(String name, String mobile) throws Exception {
         //If the mobile number exists in database, throw "User already exists" exception
         //Otherwise, create the user and return "SUCCESS"
+
+        if(!whatsappService.isNewUser(mobile)) {
+            throw new Exception("User already exists");
+        }
 
         return whatsappService.createUser(name, mobile);
     }
@@ -56,7 +53,7 @@ public class WhatsappController {
     public int sendMessage(Message message, User sender, Group group) throws Exception{
         //Throw "Group does not exist" if the mentioned group does not exist
         //Throw "You are not allowed to send message" if the sender is not a member of the group
-        //If the message is sent successfully, return the final number of messages in that group
+        //If the message is sent successfully, return the final number of messages in that group.
 
         return whatsappService.sendMessage(message, sender, group);
     }
@@ -70,24 +67,24 @@ public class WhatsappController {
         return whatsappService.changeAdmin(approver, user, group);
     }
 
-    @DeleteMapping("/remove-user")
-    public int removeUser(User user) throws Exception{
-        //This is a bonus problem and does not contains any marks
-        //A user belongs to exactly one group
-        //If user is not found in any group, throw "User not found" exception
-        //If user is found in a group and it is the admin, throw "Cannot remove admin" exception
-        //If user is not the admin, remove the user from the group, remove all its messages from all the databases, and update relevant attributes accordingly.
-        //If user is removed successfully, return (the updated number of users in the group + the updated number of messages in group + the updated number of overall messages)
-
-        return whatsappService.removeUser(user);
-    }
-
-    @GetMapping("/find-messages")
-    public String findMessage(Date start, Date end, int K) throws Exception{
-        //This is a bonus problem and does not contains any marks
-        // Find the Kth latest message between start and end (excluding start and end)
-        // If the number of messages between given time is less than K, throw "K is greater than the number of messages" exception
-
-        return whatsappService.findMessage(start, end, K);
-    }
+//    @DeleteMapping("/remove-user")
+//    public int removeUser(User user) throws Exception{
+//        //This is a bonus problem and does not contains any marks
+//        //A user belongs to exactly one group
+//        //If user is not found in any group, throw "User not found" exception
+//        //If user is found in a group and it is the admin, throw "Cannot remove admin" exception
+//        //If user is not the admin, remove the user from the group, remove all its messages from all the databases, and update relevant attributes accordingly.
+//        //If user is removed successfully, return (the updated number of users in the group + the updated number of messages in group + the updated number of overall messages)
+//
+//        return whatsappService.removeUser(user);
+//    }
+//
+//    @GetMapping("/find-messages")
+//    public String findMessage(Date start, Date end, int K) throws Exception{
+//        //This is a bonus problem and does not contains any marks
+//        // Find the Kth latest message between start and end (excluding start and end)
+//        // If the number of messages between given time is less than K, throw "K is greater than the number of messages" exception
+//
+//        return whatsappService.findMessage(start, end, K);
+//    }
 }
