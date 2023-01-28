@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class WhatsappController {
 
     //Autowire will not work in this case, no need to change this and add autowire
-    WhatsappService whatsappService = new WhatsappService();
+    WhatsappService whatsappService= new WhatsappService();
 
     @PostMapping("/add-user")
     public String createUser(String name, String mobile) throws Exception {
@@ -56,7 +56,7 @@ public class WhatsappController {
     public int sendMessage(Message message, User sender, Group group) throws Exception{
         //Throw "Group does not exist" if the mentioned group does not exist
         //Throw "You are not allowed to send message" if the sender is not a member of the group
-        //If the message is sent successfully, return the final number of messages in that group.
+        //If the message is sent successfully, return the final number of messages in that group
 
         return whatsappService.sendMessage(message, sender, group);
     }
